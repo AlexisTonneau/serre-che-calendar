@@ -19,13 +19,19 @@ function App() {
         setNextOccupiers(await response.json());
     }
 
+    const deleteRow =  (id) => {
+        fetch("http://localhost:8000/"+id, {
+            method: "DELETE"
+        }).then(()  => fetchSlots())
+            .catch(e => console.error(e));
+    }
 
 
     return (
     <div className="App bg-image">
       <h1 style={{marginTop: 0, padding: 5}}>Chantemerle - Réservation de l'appartement</h1>
         <div style={{padding: "1vh"}}>
-            <NextOccupiers slots={nextOccupiers} />
+            <NextOccupiers slots={nextOccupiers} deleteRow={deleteRow} />
         </div>
       <div style={{padding: "1vh"}}>
           <Button variant="contained">

@@ -39,7 +39,6 @@ export const BookNewSlot: React.FC<{isOpen: boolean, handleClose: () => void, ha
 };
 
 
-
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',

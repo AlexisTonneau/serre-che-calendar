@@ -1,5 +1,4 @@
 import './App.css';
-import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import {Button} from "@mui/material";
 import {NextOccupiers} from "./Components/NextOccupiers";
 import {CalendarView} from "./Components/CalendarView";
@@ -7,7 +6,6 @@ import {useEffect, useState} from "react";
 import {BookNewSlot} from "./Components/BookNewSlot";
 
 function App() {
-
 
     const [nextOccupiers, setNextOccupiers] = useState([]);
     const [isOpen, setOpen] = useState(false);
@@ -19,7 +17,24 @@ function App() {
 
     const fetchSlots = async () => {
         const response = await fetch("http://localhost:8000/");
-        setNextOccupiers(await response.json());
+        const slots = await response.json() || [];
+
+        const mapSlotsToColor = {};
+
+        let j = 0;
+        for (let i = 0; i < slots.length; i++) {
+            let color;
+            if (!mapSlotsToColor[slots[i].name]) {
+                color = colors[j]
+                mapSlotsToColor[slots[i].name] = color;
+                j++;
+            } else {
+                color = mapSlotsToColor[slots[i].name]
+            }
+            slots[i]['color'] = color;
+        }
+
+        setNextOccupiers(slots);
     }
 
     const deleteRow =  (id) => {
@@ -63,5 +78,8 @@ function App() {
     </div>
   );
 }
+
+
+const colors = ['blue', 'purple', 'yellow', 'orange', 'green']
 
 export default App;

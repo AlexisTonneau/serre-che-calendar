@@ -1,4 +1,4 @@
-import {Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 
 export const OccupiersList: React.FC<{ slots: Slot[], deleteRow: (id: string) => void}> = ({slots, deleteRow}) => {
     return (
@@ -17,13 +17,13 @@ export const OccupiersList: React.FC<{ slots: Slot[], deleteRow: (id: string) =>
                         {slots.map((row) => (
                             <TableRow
                                 key={row.id}
-                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                sx={{'&:last-child td, &:last-child th': {border: 0, backgroundColor: row.id%2===0 ? 'white' : '#DEDEDE' }}}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.name}
+                                    <b>{row.name}</b>
                                 </TableCell>
-                                <TableCell align="right">{row.start}</TableCell>
-                                <TableCell align="right">{row.end}</TableCell>
+                                <TableCell align="right"><b>{row.start}</b></TableCell>
+                                <TableCell align="right"><b>{row.end}</b></TableCell>
                                 <TableCell align="right">
                                     <div >
                                         <svg fill="#ff0000" height="20px" width="20px" version="1.1" id="Layer_1"
@@ -60,5 +60,6 @@ export type Slot = {
     start: string;
     end: string;
     name: string;
-    id?: string;
+    id?: number;
+    color: string
 }

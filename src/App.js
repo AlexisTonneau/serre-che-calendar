@@ -16,7 +16,7 @@ function App() {
     }, []);
 
     const fetchSlots = async () => {
-        const response = await fetch("http://localhost:8000/");
+        const response = await fetch("https://api.serreche.atonneau.me/");
         const slots = await response.json() || [];
 
         const mapSlotsToColor = {};
@@ -38,7 +38,7 @@ function App() {
     }
 
     const deleteRow =  (id) => {
-        fetch("http://localhost:8000/"+id, {
+        fetch("https://api.serreche.atonneau.me/"+id, {
             method: "DELETE"
         }).then(()  => fetchSlots())
             .catch(e => console.error(e));
@@ -48,7 +48,7 @@ function App() {
         const headers = new Headers();
         headers.append("accept", "application/json");
         headers.append("Content-Type", "application/json");
-        fetch("http://localhost:8000/", {
+        fetch("https://api.serreche.atonneau.me/", {
             method: "POST",
             body: JSON.stringify(payload),
             headers

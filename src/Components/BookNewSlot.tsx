@@ -13,9 +13,17 @@ export const BookNewSlot: React.FC<{isOpen: boolean, handleClose: () => void, ha
 
 
     const save = () => {
-        handleSave({name, start, end})
+        if (!!name && !!start && !!end) {
+            handleSave({name, start, end})
+        }
     }
 
+    const handleChangeStart = (date) => {
+        console.log(date)
+        setStart(date);
+        const endDate = date.add(1, 'd')
+        setEnd(endDate)
+    }
 
     return (
         <Modal open={isOpen} onClose={handleClose}>
@@ -28,7 +36,7 @@ export const BookNewSlot: React.FC<{isOpen: boolean, handleClose: () => void, ha
                 <TextField id="outlined-basic" label="Nom" variant="outlined" value={name} onChange={e => setName(e.target.value)} style={{width: "50%"}} />
                 <div style={{height: 10}} />
                 <div style={{display: "flex", justifyContent: "space-around"}}>
-                    <DatePicker value={start} onChange={e => setStart(e)} format="DD/MM/YYYY" label="Date de début"/>
+                    <DatePicker value={start} onChange={e => handleChangeStart(e)} format="DD/MM/YYYY" label="Date de début"/>
                     <DatePicker value={end} onChange={e => setEnd(e)} format="DD/MM/YYYY" label="Date de fin"/>
                 </div>
                 <Button onClick={() => save()}>Enregistrer</Button>

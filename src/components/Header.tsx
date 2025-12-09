@@ -1,4 +1,4 @@
-import { Cloud, User, AlertCircle } from 'lucide-react'
+import { Cloud, AlertCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface WeatherData {
@@ -84,16 +84,23 @@ export default function Header() {
 
   return (
     <header className="glass sticky top-0 z-20 border-b border-white/10 backdrop-blur-xl">
-      <div className="container mx-auto px-4 py-6 flex items-center justify-between">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Left: Logo and Title */}
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-200 to-yellow-200 bg-clip-text text-transparent">
-            Chantemerle
-          </h1>
-          <p className="text-sm text-amber-100/70">Réservation de l'appartement</p>
+        <div className="flex items-center gap-4">
+          <img
+            src="/logo.png"
+            alt="Chantemerle Logo"
+            className="w-12 h-12 rounded-lg"
+          />
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-200 to-yellow-200 bg-clip-text text-transparent">
+              Chantemerle
+            </h1>
+            <p className="text-sm text-amber-100/70">Réservation de l'appartement</p>
+          </div>
         </div>
 
-        {/* Right: Weather and Profile */}
+        {/* Right: Weather */}
         <div className="flex items-center gap-6">
           <div className="hidden sm:flex items-center gap-2 glass-card px-4 py-2 cursor-pointer hover:bg-white/20">
             {isLoading ? (
@@ -120,10 +127,6 @@ export default function Header() {
               </>
             )}
           </div>
-
-          <button className="btn-icon hover:bg-blue-500/20">
-            <User size={20} className="text-orange-400" />
-          </button>
         </div>
       </div>
     </header>

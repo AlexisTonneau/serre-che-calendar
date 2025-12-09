@@ -9,7 +9,12 @@
       "mcp__playwright__browser_take_screenshot",
       "mcp__playwright__browser_run_code",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__playwright__browser_resize",
+      "WebFetch(domain:open-meteo.com)",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_console_messages"
     ],
     "deny": [],
     "ask": []

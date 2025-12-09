@@ -12,29 +12,29 @@
     background: linear-gradient(to bottom right, #f5f1eb, #e8dfd2, #d9cbb0);
     background-attachment: fixed;
     height: 100vh;
-    color: #3d3d3d;
+    color: #1a1a1a;
   }
 }
 
 /* Glassmorphism effect */
 @layer components {
   .glass {
-    background-color: rgba(255, 255, 255, 0.5);
-    @apply backdrop-blur-md border border-amber-200/50 rounded-lg shadow-glass;
+    background-color: rgba(255, 255, 255, 0.75);
+    @apply backdrop-blur-md border border-amber-300 rounded-lg shadow-glass text-gray-900;
   }
 
   .glass-lg {
-    background-color: rgba(255, 255, 255, 0.5);
-    @apply backdrop-blur-xl border border-amber-200/50 rounded-2xl shadow-glass-lg;
+    background-color: rgba(255, 255, 255, 0.75);
+    @apply backdrop-blur-xl border border-amber-300 rounded-2xl shadow-glass-lg text-gray-900;
   }
 
   .glass-card {
     @apply glass p-6 transition-all duration-300;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.75);
   }
 
   .glass-card:hover {
-    background-color: rgba(255, 255, 255, 0.65);
+    background-color: rgba(255, 255, 255, 0.85);
   }
 
   .btn-primary {
@@ -65,20 +65,20 @@
   }
 
   .input-field {
-    background-color: rgba(255, 255, 255, 0.7);
-    @apply w-full px-4 py-2 border border-amber-300 rounded-lg text-gray-800 focus:outline-none focus:border-primary-500 transition-colors duration-200;
+    background-color: rgba(255, 255, 255, 0.9);
+    @apply w-full px-4 py-2 border border-amber-400 rounded-lg text-gray-900 focus:outline-none focus:border-primary-600 transition-colors duration-200;
   }
 
   .input-field::placeholder {
-    color: rgba(107, 95, 82, 0.6);
+    color: rgba(107, 95, 82, 0.8);
   }
 
   .badge-tentative {
-    @apply px-2 py-1 bg-amber-500/20 text-amber-200 text-xs font-semibold rounded border border-amber-500/30;
+    @apply px-2 py-1 bg-amber-100 text-amber-900 text-xs font-semibold rounded border border-amber-400;
   }
 
   .badge-booked {
-    @apply px-2 py-1 bg-green-500/20 text-green-200 text-xs font-semibold rounded border border-green-500/30;
+    @apply px-2 py-1 bg-green-100 text-green-900 text-xs font-semibold rounded border border-green-400;
   }
 
   .scrollable-list {

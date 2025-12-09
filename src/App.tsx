@@ -117,7 +117,7 @@ export default function App() {
 
         {/* Error notification */}
         {error && (
-          <div className="mx-4 mt-4 p-4 glass bg-red-500/20 border-red-500/50 rounded-lg text-red-200">
+          <div className="mx-4 mt-4 p-4 glass bg-red-100 border-red-400 rounded-lg text-red-900">
             {error}
           </div>
         )}

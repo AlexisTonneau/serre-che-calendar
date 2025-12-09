@@ -6,10 +6,10 @@ export default function Header() {
       <div className="container mx-auto px-4 py-6 flex items-center justify-between">
         {/* Left: Logo and Title */}
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-400 to-primary-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-primary-600">
             Chantemerle
           </h1>
-          <p className="text-sm text-gray-700">Réservation de l'appartement</p>
+          <p className="text-sm text-gray-800">Réservation de l'appartement</p>
         </div>
 
         {/* Right: Weather and Profile */}
@@ -17,8 +17,8 @@ export default function Header() {
           <div className="hidden sm:flex items-center gap-2 glass-card px-4 py-2 cursor-pointer hover:bg-white/20">
             <Cloud size={20} className="text-primary-400" />
             <div className="text-sm">
-              <p className="text-gray-800">12°C</p>
-              <p className="text-xs text-gray-600">Partiellement nuageux</p>
+              <p className="text-gray-900 font-semibold">12°C</p>
+              <p className="text-xs text-gray-700">Partiellement nuageux</p>
             </div>
           </div>
 

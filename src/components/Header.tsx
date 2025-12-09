@@ -90,7 +90,7 @@ export default function Header() {
           <img
             src="/logo.png"
             alt="Chantemerle Logo"
-            className="w-12 h-12 rounded-lg"
+            className="w-12 h-12 rounded-lg bg-white/20 p-1"
           />
           <div className="flex flex-col">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-200 to-yellow-200 bg-clip-text text-transparent">

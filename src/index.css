@@ -4,13 +4,26 @@
 
 @layer base {
   html {
-    @apply scroll-smooth overflow-hidden;
+    @apply scroll-smooth;
+    overflow: auto;
   }
 
   body {
-    @apply font-sans bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100 overflow-hidden;
+    @apply font-sans bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-slate-100;
     background-attachment: fixed;
-    height: 100vh;
+    height: auto;
+    overflow: auto;
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      overflow: hidden;
+    }
+
+    body {
+      overflow: hidden;
+      height: 100vh;
+    }
   }
 }
 

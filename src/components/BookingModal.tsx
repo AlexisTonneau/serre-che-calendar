@@ -94,10 +94,10 @@ export default function BookingModal({
       <div className="glass-lg w-full max-w-md p-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-white">Nouvelle réservation</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Nouvelle réservation</h2>
           <button
             onClick={onClose}
-            className="btn-icon hover:bg-red-500/20 text-red-400"
+            className="btn-icon hover:bg-red-200/50 text-red-700"
             disabled={isSubmitting}
           >
             <X size={20} />
@@ -108,7 +108,7 @@ export default function BookingModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name Input */}
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               Nom de l'occupant
             </label>
             <input
@@ -123,7 +123,7 @@ export default function BookingModal({
 
           {/* Start Date Input */}
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               Date de début
             </label>
             <input
@@ -137,7 +137,7 @@ export default function BookingModal({
 
           {/* End Date Input */}
           <div>
-            <label className="block text-sm font-medium text-slate-200 mb-2">
+            <label className="block text-sm font-medium text-gray-800 mb-2">
               Date de fin
             </label>
             <input
@@ -151,7 +151,7 @@ export default function BookingModal({
 
           {/* Error Message */}
           {error && (
-            <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+            <div className="p-3 bg-red-100 border border-red-400 rounded-lg text-red-900 text-sm">
               {error}
             </div>
           )}

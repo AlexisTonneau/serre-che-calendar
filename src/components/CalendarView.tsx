@@ -42,7 +42,7 @@ export default function CalendarView({ bookings, month }: CalendarViewProps) {
         {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
           <div
             key={day}
-            className="text-center text-xs font-semibold text-slate-400 py-2"
+            className="text-center text-xs font-semibold text-gray-700 py-2"
           >
             {day}
           </div>
@@ -68,9 +68,9 @@ export default function CalendarView({ bookings, month }: CalendarViewProps) {
                   ${isToday ? 'ring-2 ring-blue-400' : ''}
                   ${booked
                     ? booking?.status === 'tentative'
-                      ? 'bg-amber-500/30 border border-amber-400/50 text-amber-100 hover:bg-amber-500/40'
-                      : 'bg-green-500/30 border border-green-400/50 text-green-100 hover:bg-green-500/40'
-                    : 'bg-slate-700/20 border border-slate-600/50 text-slate-300 hover:bg-slate-700/40'
+                      ? 'bg-amber-100 border border-amber-400 text-amber-900 hover:bg-amber-200'
+                      : 'bg-green-100 border border-green-400 text-green-900 hover:bg-green-200'
+                    : 'bg-gray-200 border border-gray-400 text-gray-800 hover:bg-gray-300'
                   }
                 `}
                 title={booked ? `${booking?.name}` : ''}
@@ -90,16 +90,16 @@ export default function CalendarView({ bookings, month }: CalendarViewProps) {
       {/* Legend */}
       <div className="mt-6 space-y-2 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-green-500/30 border border-green-400/50" />
-          <span className="text-slate-300">Réservé</span>
+          <div className="w-4 h-4 rounded bg-green-100 border border-green-400" />
+          <span className="text-gray-800">Réservé</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-amber-500/30 border border-amber-400/50" />
-          <span className="text-slate-300">À confirmer</span>
+          <div className="w-4 h-4 rounded bg-amber-100 border border-amber-400" />
+          <span className="text-gray-800">À confirmer</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-slate-700/20 border border-slate-600/50" />
-          <span className="text-slate-300">Disponible</span>
+          <div className="w-4 h-4 rounded bg-gray-200 border border-gray-400" />
+          <span className="text-gray-800">Disponible</span>
         </div>
       </div>
     </div>

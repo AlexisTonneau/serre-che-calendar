@@ -12,7 +12,7 @@ export default function BookingsList({ bookings, onDelete }: BookingsListProps) 
   return (
     <div className="flex flex-col gap-2 h-full">
       {/* Header Row */}
-      <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-slate-800/30 rounded-lg border border-slate-700/50 text-xs font-semibold text-slate-400 uppercase tracking-wide flex-shrink-0">
+      <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-gray-200/50 rounded-lg border border-gray-400/50 text-xs font-semibold text-gray-700 uppercase tracking-wide flex-shrink-0">
         <div className="col-span-3">Occupant</div>
         <div className="col-span-2">Début</div>
         <div className="col-span-2">Fin</div>
@@ -29,19 +29,19 @@ export default function BookingsList({ bookings, onDelete }: BookingsListProps) 
         >
           {/* Name */}
           <div className="col-span-3">
-            <p className="font-semibold text-white truncate">{booking.name}</p>
+            <p className="font-semibold text-gray-900 truncate">{booking.name}</p>
           </div>
 
           {/* Start Date */}
           <div className="col-span-2">
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-gray-700">
               {format(parseISO(booking.start), 'd MMM', { locale: fr })}
             </p>
           </div>
 
           {/* End Date */}
           <div className="col-span-2">
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-gray-700">
               {format(parseISO(booking.end), 'd MMM', { locale: fr })}
             </p>
           </div>
@@ -63,7 +63,7 @@ export default function BookingsList({ bookings, onDelete }: BookingsListProps) 
                   onDelete(booking.id)
                 }
               }}
-              className="btn-icon hover:bg-red-500/20 text-red-400 hover:text-red-300"
+              className="btn-icon hover:bg-red-200/50 text-red-700 hover:text-red-900"
               title="Supprimer la réservation"
             >
               <Trash2 size={18} />

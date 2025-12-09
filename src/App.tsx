@@ -139,7 +139,7 @@ export default function App() {
               <div className="lg:col-span-2 flex flex-col min-h-0">
                 <div className="glass-lg p-8 flex flex-col flex-1 min-h-0">
                   <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold text-white">Prochains occupants</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">Prochains occupants</h2>
                     <button
                       onClick={() => setIsModalOpen(true)}
                       className="btn-primary flex items-center gap-2"
@@ -151,7 +151,7 @@ export default function App() {
 
                   {upcomingBookings.length === 0 ? (
                     <div className="text-center py-12">
-                      <p className="text-slate-300">Aucune réservation pour le moment</p>
+                      <p className="text-gray-700">Aucune réservation pour le moment</p>
                     </div>
                   ) : (
                     <BookingsList
@@ -166,7 +166,7 @@ export default function App() {
               <div className="lg:col-span-1">
                 <div className="glass-lg p-6 sticky top-8">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">Calendrier</h3>
+                    <h3 className="text-xl font-bold text-gray-900">Calendrier</h3>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
@@ -183,7 +183,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  <p className="text-center text-slate-300 mb-4 font-semibold">
+                  <p className="text-center text-gray-800 mb-4 font-semibold">
                     {format(currentMonth, 'MMMM yyyy', { locale: fr })}
                   </p>
 

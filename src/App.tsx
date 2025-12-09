@@ -140,19 +140,20 @@ export default function App() {
         )}
 
         {!isLoading && (
-          <main className="container mx-auto px-4 py-8 h-[calc(100vh-88px)] flex flex-col">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 overflow-hidden">
+          <main className="container mx-auto px-4 py-4 lg:py-8 h-[calc(100vh-88px)] flex flex-col overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 flex-1 overflow-hidden">
               {/* Left Column - Bookings List */}
-              <div className="lg:col-span-2 flex flex-col min-h-0">
-                <div className="glass-lg p-8 flex flex-col flex-1 min-h-0">
-                  <div className="flex items-center justify-between mb-6">
+              <div className="lg:col-span-2 flex flex-col min-h-0 order-2 lg:order-1">
+                <div className="glass-lg p-4 lg:p-8 flex flex-col flex-1 min-h-0">
+                  <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
                     <h2 className="text-2xl font-bold text-white">Prochains occupants</h2>
                     <button
                       onClick={() => setIsModalOpen(true)}
-                      className="btn-primary flex items-center gap-2"
+                      className="btn-primary flex items-center gap-2 whitespace-nowrap"
                     >
                       <Plus size={20} />
-                      Réserver un créneau
+                      <span className="hidden sm:inline">Réserver un créneau</span>
+                      <span className="sm:hidden">Réserver</span>
                     </button>
                   </div>
 
@@ -170,10 +171,10 @@ export default function App() {
               </div>
 
               {/* Right Column - Calendar */}
-              <div className="lg:col-span-1">
-                <div className="glass-lg p-6 sticky top-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">Calendrier</h3>
+              <div className="lg:col-span-1 flex flex-col min-h-0 order-1 lg:order-2">
+                <div className="glass-lg p-4 lg:p-6 flex flex-col min-h-0 lg:sticky lg:top-4">
+                  <div className="flex items-center justify-between mb-4 lg:mb-6">
+                    <h3 className="text-lg lg:text-xl font-bold text-white">Calendrier</h3>
                     <div className="flex gap-2">
                       <button
                         onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
@@ -190,11 +191,13 @@ export default function App() {
                     </div>
                   </div>
 
-                  <p className="text-center text-slate-300 mb-4 font-semibold">
+                  <p className="text-center text-slate-300 mb-2 lg:mb-4 font-semibold text-sm lg:text-base">
                     {format(currentMonth, 'MMMM yyyy', { locale: fr })}
                   </p>
 
-                  <CalendarView bookings={bookings} month={currentMonth} />
+                  <div className="flex-1 min-h-0 overflow-y-auto">
+                    <CalendarView bookings={bookings} month={currentMonth} />
+                  </div>
                 </div>
               </div>
             </div>

@@ -16,9 +16,9 @@ export default function Header() {
       try {
         setIsLoading(true)
         // Using Open-Meteo API - free, no API key required
-        // Default location: Chamonix, France (mountains - 45.88°N, 6.87°E)
+        // Location: Alpe d'Huez, France (44.9262°N, 6.6072°E)
         const response = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=45.88&longitude=6.87&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=Europe/Paris'
+          'https://api.open-meteo.com/v1/forecast?latitude=44.9262&longitude=6.6072&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=Europe/Paris'
         )
 
         if (!response.ok) throw new Error('Weather API error')

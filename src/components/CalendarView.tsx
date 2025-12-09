@@ -1,4 +1,4 @@
-import { startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, format, isSameMonth, parseISO, isWithinInterval } from 'date-fns'
+import { startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, format, isSameMonth, parseISO, isWithinInterval, isBefore, startOfDay } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Booking } from '../types'
 
@@ -57,26 +57,30 @@ export default function CalendarView({ bookings, month }: CalendarViewProps) {
             const booked = isDateBooked(day)
             const booking = getBookingForDate(day)
             const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+            const isPast = isBefore(startOfDay(day), startOfDay(new Date()))
 
             return (
               <div
                 key={dayIdx}
                 className={`
                   aspect-square rounded-lg flex items-center justify-center text-xs font-semibold
-                  transition-all duration-200 cursor-pointer group relative
+                  transition-all duration-200 group relative
                   ${!isCurrentMonth ? 'opacity-30' : ''}
-                  ${isToday ? 'ring-2 ring-blue-400' : ''}
-                  ${booked
+                  ${isPast ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
+                  ${isToday && !isPast ? 'ring-2 ring-blue-400' : ''}
+                  ${isPast
+                    ? 'bg-slate-800/30 border border-slate-700/30 text-slate-500'
+                    : booked
                     ? booking?.status === 'tentative'
                       ? 'bg-amber-500/30 border border-amber-400/50 text-amber-100 hover:bg-amber-500/40'
                       : 'bg-green-500/30 border border-green-400/50 text-green-100 hover:bg-green-500/40'
                     : 'bg-slate-700/20 border border-slate-600/50 text-slate-300 hover:bg-slate-700/40'
                   }
                 `}
-                title={booked ? `${booking?.name}` : ''}
+                title={isPast ? 'Date passée' : (booked ? `${booking?.name}` : '')}
               >
                 <span className="group-hover:hidden">{format(day, 'd')}</span>
-                {booked && (
+                {!isPast && booked && (
                   <span className="hidden group-hover:block text-xs truncate px-1 text-center max-w-full">
                     {booking?.name?.split(' ')[0]}
                   </span>

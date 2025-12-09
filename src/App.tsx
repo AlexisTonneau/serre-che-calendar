@@ -108,15 +108,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background with overlay */}
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop")',
-          filter: 'brightness(0.4) blur(4px)',
-        }}
-      />
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80" />
+      {/* Subtle light overlay for texture */}
+      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-white/10 via-transparent to-white/10" />
 
       {/* Main Content */}
       <div className="relative z-10">

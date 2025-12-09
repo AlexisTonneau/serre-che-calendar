@@ -87,10 +87,10 @@ export default function Header() {
       <div className="container mx-auto px-4 py-6 flex items-center justify-between">
         {/* Left: Logo and Title */}
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-200 to-yellow-200 bg-clip-text text-transparent">
             Chantemerle
           </h1>
-          <p className="text-sm text-amber-700/60">Réservation de l'appartement</p>
+          <p className="text-sm text-amber-100/70">Réservation de l'appartement</p>
         </div>
 
         {/* Right: Weather and Profile */}

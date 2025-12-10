@@ -72,9 +72,9 @@ export default function CalendarView({ bookings, month }: CalendarViewProps) {
                     ? 'bg-slate-800/30 border border-slate-700/30 text-slate-500'
                     : booked
                     ? booking?.status === 'tentative'
-                      ? 'bg-amber-500/30 border border-amber-400/50 text-amber-100 hover:bg-amber-500/40'
-                      : 'bg-green-500/30 border border-green-400/50 text-green-100 hover:bg-green-500/40'
-                    : 'bg-slate-700/20 border border-slate-600/50 text-slate-300 hover:bg-slate-700/40'
+                      ? 'bg-amber-500/30 border border-amber-400/50 text-amber-100'
+                      : 'bg-green-500/30 border border-green-400/50 text-green-100'
+                    : 'bg-slate-700/20 border border-slate-600/50 text-slate-300'
                   }
                 `}
                 title={isPast ? 'Date passée' : (booked ? `${booking?.name}` : '')}

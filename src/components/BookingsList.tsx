@@ -35,14 +35,14 @@ export default function BookingsList({ bookings, onDelete }: BookingsListProps) 
           {/* Start Date */}
           <div className="col-span-2">
             <p className="text-sm text-slate-300">
-              {format(parseISO(booking.start), 'd MMM', { locale: fr })}
+              {format(parseISO(booking.start), 'd MMM yyyy', { locale: fr })}
             </p>
           </div>
 
           {/* End Date */}
           <div className="col-span-2">
             <p className="text-sm text-slate-300">
-              {format(parseISO(booking.end), 'd MMM', { locale: fr })}
+              {format(parseISO(booking.end), 'd MMM yyyy', { locale: fr })}
             </p>
           </div>
 

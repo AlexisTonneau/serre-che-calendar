@@ -83,14 +83,14 @@ export default function Header() {
   }, [])
 
   return (
-    <header className="glass sticky top-0 z-20 border-b border-white/10 backdrop-blur-xl">
+    <header className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-20">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Left: Logo and Title */}
         <div className="flex items-center gap-4">
           <img
-            src="/logo.png"
+            src="/android-chrome-512x512.png"
             alt="Chantemerle Logo"
-            className="w-12 h-12 rounded-lg bg-white/20 p-1"
+            className="w-16 h-16 rounded-lg"
           />
           <div className="flex flex-col">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-200 to-yellow-200 bg-clip-text text-transparent">
@@ -102,7 +102,7 @@ export default function Header() {
 
         {/* Right: Weather */}
         <div className="flex items-center gap-6">
-          <div className="hidden sm:flex items-center gap-2 glass-card px-4 py-2 cursor-pointer hover:bg-white/20">
+          <div className="hidden sm:flex items-center gap-2 glass-card px-4 py-2 cursor-pointer">
             {isLoading ? (
               <>
                 <AlertCircle size={20} className="text-slate-400 animate-spin" />

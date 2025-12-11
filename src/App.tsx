@@ -38,28 +38,7 @@ export default function App() {
     }
   }
 
-  const getMockData = (): Booking[] => [
-    { id: 1, name: 'Alice', start: '2024-12-27', end: '2025-01-03', status: 'booked' },
-    { id: 2, name: 'Aymeric', start: '2025-07-11', end: '2025-07-14', status: 'booked' },
-    { id: 3, name: 'Aymeric', start: '2025-01-31', end: '2025-02-07', status: 'tentative' },
-    { id: 4, name: 'Alexis', start: '2025-01-14', end: '2025-01-26', status: 'booked' },
-    { id: 5, name: 'Del & Clery', start: '2025-01-25', end: '2025-02-02', status: 'booked' },
-    { id: 6, name: 'Brioist', start: '2025-02-14', end: '2025-02-21', status: 'booked' },
-    { id: 7, name: 'Sophie & Marc', start: '2025-03-01', end: '2025-03-08', status: 'booked' },
-    { id: 8, name: 'Pierre', start: '2025-03-15', end: '2025-03-22', status: 'tentative' },
-    { id: 9, name: 'Isabelle', start: '2025-04-05', end: '2025-04-12', status: 'booked' },
-    { id: 10, name: 'Thomas & Julie', start: '2025-04-20', end: '2025-04-27', status: 'booked' },
-    { id: 11, name: 'Nicolas', start: '2025-05-10', end: '2025-05-17', status: 'booked' },
-    { id: 12, name: 'Marie', start: '2025-05-24', end: '2025-05-31', status: 'tentative' },
-    { id: 13, name: 'Jean & Anne', start: '2025-06-07', end: '2025-06-14', status: 'booked' },
-    { id: 14, name: 'Laurent', start: '2025-06-21', end: '2025-06-28', status: 'booked' },
-    { id: 15, name: 'Claire', start: '2025-07-05', end: '2025-07-10', status: 'booked' },
-    { id: 16, name: 'Michel & Véronique', start: '2025-08-02', end: '2025-08-09', status: 'booked' },
-    { id: 17, name: 'Dominique', start: '2025-08-16', end: '2025-08-23', status: 'tentative' },
-    { id: 18, name: 'Fabrice', start: '2025-09-01', end: '2025-09-08', status: 'booked' },
-    { id: 19, name: 'Nathalie & Patrick', start: '2025-09-15', end: '2025-09-22', status: 'booked' },
-    { id: 20, name: 'Gérard', start: '2025-10-04', end: '2025-10-11', status: 'booked' },
-  ]
+  const getMockData = (): Booking[] => []
 
   const handleAddBooking = async (newBooking: Omit<Booking, 'id'>) => {
     try {

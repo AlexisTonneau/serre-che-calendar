@@ -25,7 +25,10 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - run: npm install --no-audit --no-fund
+      - name: Pin npm (works around "Exit handler never called" bug)
+        run: npm install -g npm@10.8.2
+
+      - run: npm ci --no-audit --no-fund
 
       - name: Build
         env:

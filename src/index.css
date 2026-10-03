@@ -1,6 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@import 'react-day-picker/style.css';
 
 @layer base {
   html {
@@ -102,6 +103,84 @@
   .status-dot-tentative { @apply w-1.5 h-1.5 rounded-full bg-ochre-500; }
 
   .scrollable-list { @apply overflow-y-auto pr-1; }
+}
+
+.rdp-chantemerle {
+  --rdp-accent-color: #C96F3C;
+  --rdp-accent-background-color: #F8E1CB;
+  --rdp-today-color: #C96F3C;
+  --rdp-day-height: 38px;
+  --rdp-day-width: 38px;
+  --rdp-day_button-height: 36px;
+  --rdp-day_button-width: 36px;
+  --rdp-day_button-border-radius: 10px;
+  --rdp-selected-border: 2px solid transparent;
+  --rdp-nav_button-height: 2rem;
+  --rdp-nav_button-width: 2rem;
+  --rdp-nav-height: 2rem;
+  --rdp-weekday-padding: 0.5rem 0;
+  --rdp-outside-opacity: 0.4;
+  --rdp-disabled-opacity: 0.3;
+  --rdp-animation_duration: 0.2s;
+  margin: 0;
+  color: #2B2520;
+}
+
+.rdp-chantemerle .rdp-month_caption {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  text-transform: capitalize;
+  color: #2B2520;
+}
+
+.rdp-chantemerle .rdp-weekday {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #8A7E73;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.rdp-chantemerle .rdp-day_button {
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 150ms, color 150ms;
+}
+
+.rdp-chantemerle .rdp-day:not(.rdp-selected):not(.rdp-disabled) .rdp-day_button:hover {
+  background-color: #F2EDE4;
+  color: #2B2520;
+}
+
+.rdp-chantemerle .rdp-today:not(.rdp-selected) .rdp-day_button {
+  color: #C96F3C;
+  font-weight: 600;
+}
+
+.rdp-chantemerle .rdp-button_previous,
+.rdp-chantemerle .rdp-button_next {
+  color: #6B5F55;
+  border-radius: 999px;
+  transition: background-color 150ms;
+}
+
+.rdp-chantemerle .rdp-button_previous:hover,
+.rdp-chantemerle .rdp-button_next:hover {
+  background-color: #F2EDE4;
+  color: #2B2520;
+}
+
+.rdp-chantemerle .rdp-range_middle .rdp-day_button {
+  border-radius: 0;
+  color: #974B23;
+}
+
+.rdp-chantemerle .rdp-range_start .rdp-day_button,
+.rdp-chantemerle .rdp-range_end .rdp-day_button {
+  background-color: #C96F3C;
+  color: #fff;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }

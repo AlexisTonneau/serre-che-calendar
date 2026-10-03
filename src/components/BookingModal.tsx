@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
-import { isWithinInterval } from 'date-fns'
+import { X, CalendarDays } from 'lucide-react'
+import { DayPicker, type DateRange } from 'react-day-picker'
+import { fr } from 'date-fns/locale'
+import { format, parseISO, differenceInCalendarDays } from 'date-fns'
 import { Booking } from '../types'
 
 interface BookingModalProps {
@@ -17,42 +19,46 @@ export default function BookingModal({
   existingBookings,
 }: BookingModalProps) {
   const [name, setName] = useState('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
+  const [range, setRange] = useState<DateRange | undefined>()
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const checkConflict = (start: string, end: string): boolean => {
-    const newStart = new Date(start)
-    const newEnd = new Date(end)
-    return existingBookings.some(booking => {
-      const bookingStart = new Date(booking.start)
-      const bookingEnd = new Date(booking.end)
-      return (
-        (newStart <= bookingEnd && newEnd >= bookingStart) ||
-        isWithinInterval(newStart, { start: bookingStart, end: bookingEnd }) ||
-        isWithinInterval(newEnd, { start: bookingStart, end: bookingEnd })
-      )
+  const bookedMatchers = existingBookings.map(b => ({
+    from: parseISO(b.start),
+    to: parseISO(b.end),
+  }))
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const checkConflict = (start: Date, end: Date): boolean =>
+    existingBookings.some(b => {
+      const bStart = parseISO(b.start)
+      const bEnd = parseISO(b.end)
+      return start <= bEnd && end >= bStart
     })
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     if (!name.trim()) return setError('Veuillez entrer un nom')
-    if (!startDate) return setError('Veuillez sélectionner une date d\'arrivée')
-    if (!endDate) return setError('Veuillez sélectionner une date de départ')
-
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    if (start >= end) return setError('La date de départ doit être après l\'arrivée')
-    if (checkConflict(startDate, endDate)) return setError('Cette période chevauche une réservation existante')
+    if (!range?.from || !range?.to) return setError('Sélectionnez les dates du séjour')
+    if (range.from.getTime() === range.to.getTime())
+      return setError('Le séjour doit durer au moins une nuit')
+    if (checkConflict(range.from, range.to))
+      return setError('Cette période chevauche une réservation existante')
 
     try {
       setIsSubmitting(true)
-      onSubmit({ name: name.trim(), start: startDate, end: endDate, status: 'booked' })
-      setName(''); setStartDate(''); setEndDate('')
+      onSubmit({
+        name: name.trim(),
+        start: format(range.from, 'yyyy-MM-dd'),
+        end: format(range.to, 'yyyy-MM-dd'),
+        status: 'booked',
+      })
+      setName('')
+      setRange(undefined)
     } finally {
       setIsSubmitting(false)
     }
@@ -60,9 +66,11 @@ export default function BookingModal({
 
   if (!isOpen) return null
 
+  const nights = range?.from && range?.to ? differenceInCalendarDays(range.to, range.from) : 0
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/40 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-md bg-white rounded-[1.75rem] shadow-pop border border-cream-300 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-ink-900/40 backdrop-blur-sm">
+      <div className="w-full max-w-md bg-white rounded-[1.75rem] shadow-pop border border-cream-300 overflow-hidden max-h-[95vh] overflow-y-auto">
         <div className="flex items-start justify-between px-7 pt-7 pb-2">
           <div>
             <p className="text-xs uppercase tracking-[0.14em] text-ember-600 font-medium mb-2">Nouveau séjour</p>
@@ -91,25 +99,41 @@ export default function BookingModal({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="label">Arrivée</label>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="input-field"
-                disabled={isSubmitting}
-              />
+          <div>
+            <label className="label">Dates du séjour</label>
+            <div className="surface-muted p-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 text-sm">
+                <CalendarDays size={16} className="text-ember-500 shrink-0" strokeWidth={1.75} />
+                {range?.from && range?.to ? (
+                  <span className="text-ink-900 font-medium">
+                    {format(range.from, 'd MMM', { locale: fr })} → {format(range.to, 'd MMM yyyy', { locale: fr })}
+                  </span>
+                ) : range?.from ? (
+                  <span className="text-ink-700">
+                    {format(range.from, 'd MMM', { locale: fr })} → <span className="text-ink-400">départ</span>
+                  </span>
+                ) : (
+                  <span className="text-ink-400">Sélectionnez l'arrivée puis le départ</span>
+                )}
+              </div>
+              {nights > 0 && (
+                <span className="text-xs text-ink-500 whitespace-nowrap">
+                  {nights} nuit{nights > 1 ? 's' : ''}
+                </span>
+              )}
             </div>
-            <div>
-              <label className="label">Départ</label>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="input-field"
-                disabled={isSubmitting}
+
+            <div className="mt-3 surface p-2 flex justify-center">
+              <DayPicker
+                mode="range"
+                selected={range}
+                onSelect={setRange}
+                locale={fr}
+                weekStartsOn={1}
+                disabled={[{ before: today }, ...bookedMatchers]}
+                numberOfMonths={1}
+                className="rdp-chantemerle"
+                showOutsideDays
               />
             </div>
           </div>

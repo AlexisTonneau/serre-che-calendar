@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
-import { format, parseISO, isWithinInterval, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek } from 'date-fns'
+import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { Trash2, Plus, Cloud, User, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, ChevronLeft, ChevronRight, CalendarDays, AlertTriangle, RefreshCw } from 'lucide-react'
+
+const LOAD_TIMEOUT_MS = 10000
 import BookingModal from './components/BookingModal'
 import CalendarView from './components/CalendarView'
 import BookingsList from './components/BookingsList'
 import Header from './components/Header'
-import { Booking, API_BASE_URL } from './types'
+import { Booking } from './types'
+import { bookingsApi } from './lib/supabase'
 
 export default function App() {
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -14,177 +17,168 @@ export default function App() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [loadError, setLoadError] = useState<string | null>(null)
 
-  // Fetch bookings from API
-  useEffect(() => {
-    fetchBookings()
-  }, [])
+  useEffect(() => { fetchBookings() }, [])
 
   const fetchBookings = async () => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), LOAD_TIMEOUT_MS)
     try {
       setIsLoading(true)
-      const response = await fetch(`${API_BASE_URL}/`)
-      if (!response.ok) throw new Error('Impossible de charger les réservations')
-      const data = await response.json()
+      setLoadError(null)
+      const data = await bookingsApi.list(controller.signal)
       setBookings(data)
-      setError(null)
     } catch (err) {
       console.error('Erreur lors du chargement des réservations:', err)
-      setError('Impossible de charger les réservations')
-      // Fallback to mock data for development
-      setBookings(getMockData())
+      const isTimeout = err instanceof DOMException && err.name === 'AbortError'
+      setLoadError(
+        isTimeout
+          ? 'Le serveur met trop de temps à répondre.'
+          : 'Impossible de charger les réservations.'
+      )
+      setBookings([])
     } finally {
+      clearTimeout(timeoutId)
       setIsLoading(false)
     }
   }
 
-  const getMockData = (): Booking[] => []
-
   const handleAddBooking = async (newBooking: Omit<Booking, 'id'>) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newBooking),
-      })
-      if (!response.ok) throw new Error('Impossible de créer la réservation')
-      const created = await response.json()
+      const created = await bookingsApi.create(newBooking)
       setBookings([...bookings, created])
       setIsModalOpen(false)
       setError(null)
     } catch (err) {
       console.error('Erreur lors de la création de la réservation:', err)
       setError('Impossible de créer la réservation')
-      // Fallback: add locally
-      const localBooking: Booking = {
-        ...newBooking,
-        id: Math.max(0, ...bookings.map(b => b.id)) + 1,
-      }
-      setBookings([...bookings, localBooking])
-      setIsModalOpen(false)
     }
   }
 
   const handleDeleteBooking = async (id: number) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/${id}`, {
-        method: 'DELETE',
-      })
-      if (!response.ok) throw new Error('Impossible de supprimer la réservation')
+      await bookingsApi.remove(id)
       setBookings(bookings.filter(b => b.id !== id))
       setError(null)
     } catch (err) {
       console.error('Erreur lors de la suppression de la réservation:', err)
       setError('Impossible de supprimer la réservation')
-      // Fallback: remove locally
-      setBookings(bookings.filter(b => b.id !== id))
     }
   }
 
   const upcomingBookings = bookings
+    .slice()
     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-    .slice(0, 10)
+    .slice(0, 20)
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background with overlay */}
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop")',
-          filter: 'brightness(0.4) blur(4px)',
-        }}
-      />
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-slate-900/80 via-slate-800/70 to-slate-900/80" />
+    <div className="min-h-screen">
+      <Header />
 
-      {/* Main Content */}
-      <div className="relative z-10">
-        <Header />
+      {error && (
+        <div className="mx-4 lg:mx-8 mt-4 px-4 py-3 bg-ember-50 border border-ember-100 rounded-xl text-ember-700 text-sm">
+          {error}
+        </div>
+      )}
 
-        {/* Error notification */}
-        {error && (
-          <div className="mx-4 mt-4 p-4 glass bg-red-500/20 border-red-500/50 rounded-lg text-red-200">
-            {error}
+      {isLoading ? (
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="text-center">
+            <div className="inline-block w-6 h-6 border-2 border-cream-300 border-t-ember-500 rounded-full animate-spin mb-3" />
+            <p className="text-sm text-ink-500">Chargement…</p>
           </div>
-        )}
-
-        {/* Loading state */}
-        {isLoading && (
-          <div className="flex items-center justify-center h-96">
-            <div className="text-center">
-              <div className="inline-block w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mb-4" />
-              <p className="text-slate-400">Chargement des réservations...</p>
+        </div>
+      ) : loadError ? (
+        <div className="flex items-center justify-center h-[60vh] px-4">
+          <div className="surface max-w-sm w-full p-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-ember-50 text-ember-600 mb-4">
+              <AlertTriangle size={24} strokeWidth={1.5} />
             </div>
+            <p className="font-display text-lg text-ink-900 mb-1">Chargement impossible</p>
+            <p className="text-sm text-ink-500 mb-5">{loadError}</p>
+            <button onClick={fetchBookings} className="btn-primary mx-auto">
+              <RefreshCw size={14} strokeWidth={2.25} />
+              Réessayer
+            </button>
           </div>
-        )}
-
-        {!isLoading && (
-          <main className="container mx-auto px-4 py-4 lg:py-8 h-[calc(100vh-88px)] flex flex-col overflow-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8 flex-1 overflow-hidden grid-rows-[auto_1fr] lg:grid-rows-1">
-              {/* Left Column - Bookings List */}
-              <div className="lg:col-span-2 flex flex-col min-h-0 lg:order-1">
-                <div className="glass-lg p-4 lg:p-8 flex flex-col flex-1 min-h-0">
-                  <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-6">
-                    <h2 className="text-2xl font-bold text-white">Prochains occupants</h2>
-                    <button
-                      onClick={() => setIsModalOpen(true)}
-                      className="btn-primary flex items-center gap-2 whitespace-nowrap"
-                    >
-                      <Plus size={20} />
-                      <span className="hidden sm:inline">Réserver un créneau</span>
-                      <span className="sm:hidden">Réserver</span>
-                    </button>
-                  </div>
-
-                  {upcomingBookings.length === 0 ? (
-                    <div className="text-center py-12">
-                      <p className="text-slate-300">Aucune réservation pour le moment</p>
-                    </div>
-                  ) : (
-                    <BookingsList
-                      bookings={upcomingBookings}
-                      onDelete={handleDeleteBooking}
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Right Column - Calendar */}
-              <div className="lg:col-span-1 flex flex-col min-h-0 lg:order-2">
-                <div className="glass-lg p-4 lg:p-6 flex flex-col min-h-0 lg:sticky lg:top-4">
-                  <div className="flex items-center justify-between mb-4 lg:mb-6">
-                    <h3 className="text-lg lg:text-xl font-bold text-white">Calendrier</h3>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
-                        className="btn-icon"
-                      >
-                        <ChevronLeft size={18} />
-                      </button>
-                      <button
-                        onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
-                        className="btn-icon"
-                      >
-                        <ChevronRight size={18} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <p className="text-center text-slate-300 mb-2 lg:mb-4 font-semibold text-sm lg:text-base">
-                    {format(currentMonth, 'MMMM yyyy', { locale: fr })}
+        </div>
+      ) : (
+        <main className="container mx-auto px-4 lg:px-8 py-6 lg:py-10 lg:h-[calc(100vh-88px)] flex flex-col">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 flex-1 min-h-0">
+            {/* Left: Bookings */}
+            <section className="lg:col-span-3 surface-lg p-6 lg:p-8 flex flex-col min-h-0">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-ember-600 font-medium mb-1.5">
+                    Agenda
                   </p>
+                  <h2 className="font-display text-3xl lg:text-[2rem] leading-tight text-ink-900">
+                    Prochains occupants
+                  </h2>
+                  <p className="text-sm text-ink-500 mt-1">
+                    {upcomingBookings.length} séjour{upcomingBookings.length > 1 ? 's' : ''} à venir
+                  </p>
+                </div>
+                <button onClick={() => setIsModalOpen(true)} className="btn-primary self-start sm:self-auto">
+                  <Plus size={16} strokeWidth={2.25} />
+                  <span className="hidden sm:inline">Réserver un créneau</span>
+                  <span className="sm:hidden">Réserver</span>
+                </button>
+              </div>
 
-                  <div className="flex-1 min-h-0 overflow-y-auto">
-                    <CalendarView bookings={bookings} month={currentMonth} />
+              {upcomingBookings.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center">
+                  <div className="text-center py-12 max-w-xs">
+                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-cream-100 text-ember-500 mb-4">
+                      <CalendarDays size={24} strokeWidth={1.5} />
+                    </div>
+                    <p className="font-display text-lg text-ink-900 mb-1">Aucune réservation</p>
+                    <p className="text-sm text-ink-500">
+                      L'appartement est libre. Réservez un créneau pour commencer.
+                    </p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </main>
-        )}
-      </div>
+              ) : (
+                <BookingsList bookings={upcomingBookings} onDelete={handleDeleteBooking} />
+              )}
+            </section>
 
-      {/* Booking Modal */}
+            {/* Right: Calendar */}
+            <aside className="lg:col-span-2 surface p-5 lg:p-6 flex flex-col lg:sticky lg:top-24 lg:self-start">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-[0.65rem] uppercase tracking-[0.14em] text-ink-400 font-medium">
+                    {format(currentMonth, 'yyyy')}
+                  </p>
+                  <h3 className="font-display text-xl lg:text-2xl leading-tight text-ink-900 capitalize">
+                    {format(currentMonth, 'MMMM', { locale: fr })}
+                  </h3>
+                </div>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
+                    className="btn-ghost"
+                    aria-label="Mois précédent"
+                  >
+                    <ChevronLeft size={18} strokeWidth={1.75} />
+                  </button>
+                  <button
+                    onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
+                    className="btn-ghost"
+                    aria-label="Mois suivant"
+                  >
+                    <ChevronRight size={18} strokeWidth={1.75} />
+                  </button>
+                </div>
+              </div>
+
+              <CalendarView bookings={bookings} month={currentMonth} />
+            </aside>
+          </div>
+        </main>
+      )}
+
       <BookingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

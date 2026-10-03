@@ -11,5 +11,3 @@ export interface SlotInput {
   start: string
   end: string
 }
-
-export const API_BASE_URL = 'https://api.serreche.atonneau.me'

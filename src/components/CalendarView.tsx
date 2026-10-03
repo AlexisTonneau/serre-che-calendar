@@ -1,5 +1,8 @@
-import { startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, format, isSameMonth, parseISO, isWithinInterval, isBefore, startOfDay } from 'date-fns'
-import { fr } from 'date-fns/locale'
+import {
+  startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek,
+  format, isSameMonth, parseISO, isWithinInterval, isBefore, startOfDay,
+  isSameDay,
+} from 'date-fns'
 import { Booking } from '../types'
 
 interface CalendarViewProps {
@@ -15,95 +18,75 @@ export default function CalendarView({ bookings, month }: CalendarViewProps) {
 
   const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
   const weeks: Date[][] = []
-  for (let i = 0; i < days.length; i += 7) {
-    weeks.push(days.slice(i, i + 7))
-  }
+  for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7))
 
-  const isDateBooked = (date: Date): boolean => {
-    return bookings.some(booking => {
-      const start = parseISO(booking.start)
-      const end = parseISO(booking.end)
-      return isWithinInterval(date, { start, end })
-    })
-  }
+  const getBookingForDate = (date: Date): Booking | undefined =>
+    bookings.find(b => isWithinInterval(date, { start: parseISO(b.start), end: parseISO(b.end) }))
 
-  const getBookingForDate = (date: Date): Booking | undefined => {
-    return bookings.find(booking => {
-      const start = parseISO(booking.start)
-      const end = parseISO(booking.end)
-      return isWithinInterval(date, { start, end })
-    })
-  }
+  const today = new Date()
 
   return (
-    <div className="space-y-2">
-      {/* Day headers */}
-      <div className="grid grid-cols-7 gap-1 mb-3">
-        {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map((day) => (
+    <div className="flex flex-col">
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((day, i) => (
           <div
-            key={day}
-            className="text-center text-xs font-semibold text-slate-400 py-2"
+            key={i}
+            className="text-center text-[0.65rem] font-medium text-ink-400 uppercase tracking-wider py-1.5"
           >
             {day}
           </div>
         ))}
       </div>
 
-      {/* Calendar grid */}
-      {weeks.map((week, weekIdx) => (
-        <div key={weekIdx} className="grid grid-cols-7 gap-1">
-          {week.map((day, dayIdx) => {
-            const isCurrentMonth = isSameMonth(day, month)
-            const booked = isDateBooked(day)
-            const booking = getBookingForDate(day)
-            const isToday = format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
-            const isPast = isBefore(startOfDay(day), startOfDay(new Date()))
+      <div className="grid grid-cols-7 gap-1">
+        {weeks.flat().map((day, idx) => {
+          const inMonth = isSameMonth(day, month)
+          const booking = getBookingForDate(day)
+          const booked = Boolean(booking)
+          const isToday = isSameDay(day, today)
+          const isPast = isBefore(startOfDay(day), startOfDay(today))
 
-            return (
-              <div
-                key={dayIdx}
-                className={`
-                  aspect-square rounded-lg flex items-center justify-center text-xs font-semibold
-                  transition-all duration-200 group relative
-                  ${!isCurrentMonth ? 'opacity-30' : ''}
-                  ${isPast ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
-                  ${isToday && !isPast ? 'ring-2 ring-blue-400' : ''}
-                  ${isPast
-                    ? 'bg-slate-800/30 border border-slate-700/30 text-slate-500'
-                    : booked
-                    ? booking?.status === 'tentative'
-                      ? 'bg-amber-500/30 border border-amber-400/50 text-amber-100'
-                      : 'bg-green-500/30 border border-green-400/50 text-green-100'
-                    : 'bg-slate-700/20 border border-slate-600/50 text-slate-300'
-                  }
-                `}
-                title={isPast ? 'Date passée' : (booked ? `${booking?.name}` : '')}
-              >
-                <span className="group-hover:hidden">{format(day, 'd')}</span>
-                {!isPast && booked && (
-                  <span className="hidden group-hover:block text-xs truncate px-1 text-center max-w-full">
-                    {booking?.name?.split(' ')[0]}
-                  </span>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      ))}
+          const isStart = booking && isSameDay(day, parseISO(booking.start))
+          const isEnd = booking && isSameDay(day, parseISO(booking.end))
+          const tentative = booking?.status === 'tentative'
 
-      {/* Legend */}
-      <div className="mt-6 space-y-2 text-xs">
+          let bgClass = 'bg-cream-50 text-ink-700 hover:bg-cream-200'
+          if (!inMonth) bgClass = 'bg-transparent text-ink-300'
+          else if (isPast && !booked) bgClass = 'bg-transparent text-ink-300'
+          else if (booked) {
+            bgClass = tentative
+              ? 'bg-ochre-100 text-ochre-700'
+              : 'bg-sage-100 text-sage-700'
+          }
+
+          const edgeClass = booked
+            ? `${isStart && !isEnd ? 'rounded-l-full' : ''} ${isEnd && !isStart ? 'rounded-r-full' : ''} ${isStart && isEnd ? 'rounded-full' : ''} ${!isStart && !isEnd ? 'rounded-none' : ''}`
+            : 'rounded-xl'
+
+          return (
+            <div
+              key={idx}
+              className={`aspect-square flex items-center justify-center text-sm font-medium transition-colors ${bgClass} ${edgeClass} ${isToday ? 'ring-2 ring-ember-500 ring-offset-1 ring-offset-white rounded-full' : ''}`}
+              title={booking ? `${booking.name} — ${format(parseISO(booking.start), 'd MMM')} → ${format(parseISO(booking.end), 'd MMM')}` : undefined}
+            >
+              <span>{format(day, 'd')}</span>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="mt-5 pt-4 border-t border-cream-300 flex flex-wrap gap-x-5 gap-y-2 text-xs text-ink-500">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-green-500/30 border border-green-400/50" />
-          <span className="text-slate-300">Réservé</span>
+          <span className="w-3 h-3 rounded-full bg-sage-100 border border-sage-500" />
+          <span>Réservé</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-amber-500/30 border border-amber-400/50" />
-          <span className="text-slate-300">À confirmer</span>
+          <span className="w-3 h-3 rounded-full bg-ochre-100 border border-ochre-500" />
+          <span>À confirmer</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-slate-700/20 border border-slate-600/50" />
-          <span className="text-slate-300">Disponible</span>
+          <span className="w-3 h-3 rounded-full border-2 border-ember-500" />
+          <span>Aujourd'hui</span>
         </div>
       </div>
     </div>

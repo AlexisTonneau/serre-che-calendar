@@ -85,7 +85,7 @@ export default function Header() {
       <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 lg:gap-4 min-w-0">
           <img
-            src="/android-chrome-512x512.png"
+            src={`${import.meta.env.BASE_URL}android-chrome-512x512.png`}
             alt="Chantemerle"
             className="w-11 h-11 lg:w-12 lg:h-12 rounded-xl border border-cream-300 shadow-card shrink-0"
           />
